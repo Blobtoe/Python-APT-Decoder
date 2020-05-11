@@ -12,7 +12,7 @@ PYTHON REQUIREMENTS:
 TODO LIST:
 
 - Add Syncing to straighten image
-- ~~Resample the audio file
-- ~~Add command line arguments
+- ~~Resample the audio file~~
+- ~~Add command line arguments~~
 
 
