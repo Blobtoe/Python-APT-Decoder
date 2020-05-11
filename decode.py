@@ -1,8 +1,7 @@
 from scipy.io import wavfile
+from scipy import signal
 import numpy as np
-from matplotlib import pyplot as plt
 from PIL import Image
-import statistics
 
 def isOppositeSign(num1, num2):
     if (num1 < 0 and num2 > 0) or (num2 < 0 and num1 > 0):
@@ -11,6 +10,8 @@ def isOppositeSign(num1, num2):
         return False
 
 def decode(samples):
+
+    print("Started decoding process")
 
     #temporary array storing each "wave" to find its peak
     wave = [0]
@@ -21,9 +22,7 @@ def decode(samples):
     #temporary array to store each line as they are decoded
     line = []
 
-    #buffer to find the sync lines
-    buffer = []
-
+    i = 0
     for sample in samples:
 
         #once the entire wave is stored
@@ -40,37 +39,33 @@ def decode(samples):
             
             #remap that value to 0-255
             value = (int(value)/20000)*255
-
-            if len(line) > 39:
-                buffer = line[-39:]
-                for i in range(0, 4):
-                    #print(i)
-                    if buffer[0] <= 100 and buffer[5] <= 100:
-                        buffer = buffer[10:]
-                    if i >= 3:
-                        line[len(line)-39] = 255
-                        line[len(line)-1] = 255
             
             #append the line to the image when it is complete
             if len(line) == 2400:
                 image.append(line)
                 line = []
+                i += 1
+                print("Decoded line {}".format(i))
             line.append(value)
             
         wave.insert(0, sample)
         
+    print("Done decoding")
     return np.array(image)
 
 
 
-rate, data = wavfile.read('audio-short.wav')
-
 targetRate = 20800
 
-if rate != targetRate:
-    print("Please resample your audio file to {}".format(targetRate))
+rate, data = wavfile.read('D:\Radio\Audio\SDRTouch_20200508_064104_137100kHz.wav')
+print("Loaded audio file")
+
+data = signal.resample(data, len(data)//rate*targetRate+(targetRate//2))
+print("Audio resampled to {}".format(targetRate))
+
 
 data = decode(data)
 im = Image.fromarray(data)
+print("Showing image...")
 im.show()
 #im.convert("RGB").save("first3.png", "PNG")
