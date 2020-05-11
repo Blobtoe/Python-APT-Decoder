@@ -6,7 +6,7 @@ PYTHON REQUIREMENTS:
 - scipy
 - numpy
 - PIL
-- librosa
+- sys
 
 
 TODO LIST:

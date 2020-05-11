@@ -2,6 +2,7 @@ from scipy.io import wavfile
 from scipy import signal
 import numpy as np
 from PIL import Image
+import sys
 
 def isOppositeSign(num1, num2):
     if (num1 < 0 and num2 > 0) or (num2 < 0 and num1 > 0):
@@ -54,18 +55,18 @@ def decode(samples):
     return np.array(image)
 
 
+if __name__ == "__main__":
+    targetRate = 20800
 
-targetRate = 20800
+    rate, data = wavfile.read(sys.argv[0])
+    print("Loaded audio file")
 
-rate, data = wavfile.read('D:\Radio\Audio\SDRTouch_20200508_064104_137100kHz.wav')
-print("Loaded audio file")
-
-data = signal.resample(data, len(data)//rate*targetRate+(targetRate//2))
-print("Audio resampled to {}".format(targetRate))
+    data = signal.resample(data, len(data)//rate*targetRate+(targetRate//2))
+    print("Audio resampled to {}".format(targetRate))
 
 
-data = decode(data)
-im = Image.fromarray(data)
-print("Showing image...")
-im.show()
-#im.convert("RGB").save("first3.png", "PNG")
+    data = decode(data)
+    im = Image.fromarray(data)
+    print("Showing image...")
+    im.show()
+    im.convert("RGB").save(sys.argv[1], "PNG")
