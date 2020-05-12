@@ -42,7 +42,7 @@ def decode(samples):
             value = (int(value)/20000)*255
             
             #append the line to the image when it is complete
-            if len(line) == 2400:
+            if len(line) >= 2400:
                 image.append(line)
                 line = []
                 i += 1
